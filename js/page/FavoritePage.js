@@ -8,7 +8,7 @@ export default class FavoritePage extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.text}>FavoritePage</Text>
-                <Button title={"修改主题"} onPress={() => navigation.setParams({themeColor: 'black'})}></Button>
+                <Button title={"修改主题1"} onPress={() => navigation.setParams({themeColor: 'black'})}></Button>
             </View>
         )
     }

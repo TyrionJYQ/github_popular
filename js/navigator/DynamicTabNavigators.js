@@ -9,6 +9,7 @@ import FavoritePage from '../page/FavoritePage';
 import TrendingPage from '../page/TrendingPage';
 import MyPage from '../page/MyPage';
 
+
 const TABS = {
     PopularPage: {
         screen: PopularPage,
@@ -66,7 +67,6 @@ const TABS = {
 
 
 export default class DynamicTabNavigator extends Component {
-
     _genTabNavigator() {
         const { PopularPage, TrendingPage, FavoritePage, MyPage } = TABS;
         const tabs = { PopularPage, TrendingPage, FavoritePage, MyPage };
@@ -88,34 +88,25 @@ class tabBarComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            themeColor: 'red'
+            theme: {
+                color: 'yellow',
+                updateTime: Date.now()
+            }
         }
-    }
-    
-    shouldComponentUpdate(nextProps) {
-        // 是否执行render方法
-        const { routes, index } = nextProps.navigation.state;
-        if(index !== this.props.navigation.state.index) { 
-            return true;
-        }
-        let themeColor;
-        if (routes[index].params) { 
-            themeColor = routes[index].params.themeColor 
-        };
-        if (themeColor === this.state.themeColor) return false;
-        return true; 
-       
     }
     render() {
         const { routes, index } = this.props.navigation.state;
-        console.log(1)
-        if(routes[index].params && routes[index].params.themeColor) {
+        let routeTheme, { theme } = this.state;
+        if (routes[index].params && routes[index].params.theme) {
+            routeTheme = routes[index].params.theme;
+        }
+        if (routeTheme && routeTheme.updateTime > theme.updateTime) {
             this.setState({
-                themeColor: routes[index].params.themeColor
+                theme: routeTheme
             })
         }
         return <BottomTabBar
             {...this.props}
-            activeTintColor={this.state.themeColor} />
+            activeTintColor={theme.color} />
     }
 }

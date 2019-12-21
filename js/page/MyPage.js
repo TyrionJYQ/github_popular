@@ -8,7 +8,7 @@ export default class MyPage extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.text}>MyPage</Text>
-                <Button title={"修改主题"} onPress={() => navigation.setParams({themeColor: 'green'})}></Button>
+                <Button title={"修改主题"} onPress={() => navigation.setParams({theme: {color:'green',updateTime:Date.now()}})}></Button>
             </View>
         )
     }

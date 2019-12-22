@@ -1,42 +1,43 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
-import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
-import {createAppContainer} from 'react-navigation';
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, Button } from 'react-native';
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
+import { createAppContainer } from 'react-navigation';
 
 
 export default class PopularPage extends Component {
-    
-    render() {
-        const TabNavigator = createAppContainer(createMaterialTopTabNavigator({
-            Tab1: {
-                screen: Tab,
+    constructor(props) {
+        super(props);
+        this.languages = ['PHP', 'JAVA', 'PYTHON', 'GO', 'RUGBY', 'HTML', 'CSS', 'ANDROID']
+    }
+
+    _genTab() {
+        const tabs = {};
+        this.languages.forEach((language, index) => {
+            tabs[`${index}`] = {
+                screen: props => <Tab {...props} tabLabel={language} />,
                 navigationOptions: {
-                    title: 'tab1'
-                }
-            },
-            Tab2: {
-                screen: Tab,
-                navigationOptions: {
-                    title: 'tab1'
+                    title: language
                 }
             }
-        }))
-        return <TabNavigator/>
-            
-        
+        })
+        return tabs;
+    }
+    render() {
+        const tabs = this._genTab();
+        const TabNavigator = createAppContainer(createMaterialTopTabNavigator(tabs))
+        return <TabNavigator />
     }
 }
 
 class Tab extends Component {
     render() {
-        const {navigation} = this.props;
         return (
             <View style={styles.container}>
-                <Text>PopularTab</Text>
+                <Text>{this.props.tabLabel}</Text>
             </View>
         )
     }
-    
+
 }
 
 const styles = StyleSheet.create({

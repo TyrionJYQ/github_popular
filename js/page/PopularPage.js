@@ -49,6 +49,13 @@ class Tab extends Component {
             <View style={styles.container}>
                 <Text>{this.props.tabLabel}</Text>
                 <Text onPress={() => NavigationUtil.goPage({},'Detail')}>{'去详情页'}</Text>
+                <Button
+                    title={"离线缓存框架"}
+                    onPress={() => {
+                        NavigationUtil.goPage({
+                            navigation: this.props.navigation
+                        }, "DataStoreDemoPage")
+                    }}/>
             </View>
         )
     }

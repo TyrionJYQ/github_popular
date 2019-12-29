@@ -1,6 +1,7 @@
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import WelcomePage from '../page/WelcomePage';
+import DataStoreDemoPage from '../page/DataStoreDemoPage';
 import HomePage from '../page/HomePage';
 import DetailPage from '../page/DetailPage';
 
@@ -23,6 +24,12 @@ const MainNavigator = createStackNavigator({
     Detail: {
         screen: DetailPage
     },
+    DataStoreDemoPage: {
+        screen: DataStoreDemoPage,
+        navigationOptions: {
+            // header: null,// 可以通过将header设为null 来禁用StackNavigator的Navigation Bar
+        }
+    }
    
 })
 

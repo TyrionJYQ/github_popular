@@ -75,8 +75,8 @@ export default class DataStore {
      * @returns {Promise}
      */
     fetchNetData(url, flag) {
-        if (flag === FLAG_STORAGE.flag_popular) {
-            return new Promise((resolve, reject) => {
+        return new Promise((resolve,reject) => {
+            if (flag === FLAG_STORAGE.flag_popular) {
                 fetch(url)
                     .then((response) => {
                         if (response.ok) {
@@ -91,7 +91,7 @@ export default class DataStore {
                     .catch((error) => {
                         reject(error);
                     })
-            })
+           
         } else {
             new Trending().fetchTrending(url)
                 .then(items => {
@@ -102,9 +102,12 @@ export default class DataStore {
                     resolve(items);
                 })
                 .catch(error => {
-                    console.log(error);
+                    reject(error);
                 })
         }
+        })
+        
+       
 
     }
 

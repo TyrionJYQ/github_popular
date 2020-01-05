@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, ActivityIndicator, Text, FlatList, RefreshControl } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, Text, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import actions from '../action'
@@ -8,6 +8,9 @@ import TrendingItem from '../common/TrendingItem'
 import NoDataItem from '../common/NoDataItem'
 import NavigationBar from '../common/NavigationBar'
 import Toast from 'react-native-easy-toast';
+import TrendingDialog, { TimeSpans } from '../common/TrendingDialog'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 
 
 const URL = 'https://github.com/trending/';
@@ -17,14 +20,18 @@ const PAGE_SIZE = 10;
 export default class TrendingPage extends Component {
     constructor(props) {
         super(props);
-        this.languages = ['C', 'JavaScript', 'Java']
+        this.languages = [ 'PHP', 'JavaScript', 'Java']
+        this.dialog = React.createRef();
+        this.state = {
+            timeSpan: TimeSpans[0],
+        }
     }
 
     _genTab() {
         const tabs = {};
         this.languages.forEach((language, index) => {
             tabs[`${index}`] = {
-                screen: props => <TrendingTab {...props} tabLabel={language} />,
+                screen: props => <TrendingTab {...props} timeSpan={this.state.timeSpan} tabLabel={language} />,
                 navigationOptions: {
                     title: language
                 }
@@ -32,6 +39,40 @@ export default class TrendingPage extends Component {
         })
         return tabs;
     }
+    showDialog() {
+        this.dialog.current.show()
+    }
+    renderTitleView() {
+         return <View>
+            <TouchableOpacity
+                underlayColor='transparent'
+                onPress={() =>this.showDialog()}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{
+                        fontSize: 18,
+                        color: '#FFFFFF',
+                        fontWeight: '400'
+                    }}>趋势 {this.state.timeSpan.showText}</Text>
+                    <MaterialIcons
+                        name={'arrow-drop-down'}
+                        size={22}
+                        style={{ color: 'white' }}
+                    />
+                </View>
+            </TouchableOpacity>
+        </View>
+    }
+
+    onSelectTimeSpan(tab) {
+        this.dialog.current.dismiss();
+        this.setState({
+            timeSpan: tab
+        });
+        // DeviceEventEmitter.emit(EVENT_TYPE_TIME_SPAN_CHANGE, tab);
+    }
+
+
+
     render() {
         const tabs = this._genTab();
         let statusBar = {
@@ -40,6 +81,7 @@ export default class TrendingPage extends Component {
         }
         let navigationBar = <NavigationBar
             title={'趋势'}
+            titleView={this.renderTitleView()}
             statusBar={statusBar}
             style={{ backgroundColor: THEME_COLOR }}
         />
@@ -63,6 +105,11 @@ export default class TrendingPage extends Component {
             <View style={{ flex: 1, marginTop: 0, }}>
                 {navigationBar}
                 <TabNavigator />
+                 <TrendingDialog
+                    ref={this.dialog}
+                    onSelect={tab => this.onSelectTimeSpan(tab)}
+                    onClose={() => {}}
+                />
             </View>
         )
 
@@ -72,12 +119,13 @@ export default class TrendingPage extends Component {
 class Tab extends Component {
     constructor(props) {
         super(props);
-        const { tabLabel } = this.props;
+        const { tabLabel,timeSpan } = this.props;
         this.storeName = tabLabel;
+        this.timeSpan =timeSpan;
         this.toast = React.createRef()
     }
     _genFetchUrl(key) {
-        return URL + key + '?since=daily';
+        return URL + key + '?' + this.timeSpan.searchText;
     }
 
     _getStore() {

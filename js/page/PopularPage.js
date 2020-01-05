@@ -74,7 +74,8 @@ class Tab extends Component {
         super(props);
         const { tabLabel } = this.props;
         this.storeName = tabLabel;
-        this.toast = React.createRef()
+        this.toast = React.createRef();
+        
     }
     _genFetchUrl(key) {
         return URL + key + QUERY_STR;

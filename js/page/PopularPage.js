@@ -6,12 +6,13 @@ import { createAppContainer } from 'react-navigation';
 import actions from '../action'
 import PopularItem from '../common/popularItem'
 import NoDataItem from '../common/NoDataItem'
+import NavigationBar from '../common/NavigationBar'
 import Toast from 'react-native-easy-toast';
 
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
-const THEME_COLOR = 'red';
+const THEME_COLOR = '#a58';
 const PAGE_SIZE = 10;
 export default class PopularPage extends Component {
     constructor(props) {
@@ -33,21 +34,38 @@ export default class PopularPage extends Component {
     }
     render() {
         const tabs = this._genTab();
+        let statusBar = {
+            backgroundColor: '#eaeaea', //状态栏背景色
+            barStyle: 'light-content'
+        }
+        let navigationBar = <NavigationBar
+            title={'最热'}
+            statusBar={statusBar}
+            style={{ backgroundColor: THEME_COLOR }}
+        />
         const TabNavigator = createAppContainer(createMaterialTopTabNavigator(tabs, {
             tabBarOptions: {
                 tabStyle: styles.tabStyle,
                 upperCaseLabel: false,
                 scrollEnabled: true,
                 style: {
-                    backgroundColor: '#a58'
+                    backgroundColor: '#a58',
+                    height: 40
                 },
                 indicatorStyle: {
                     height: 2,
                     backgroundColor: '#fff'
-                }
+                },
+                labelStyle: styles.labelStyle,//文字的样式
             }
         }))
-        return <TabNavigator />
+        return (
+            <View style={{ flex: 1, marginTop: 0, }}>
+                {navigationBar}
+                <TabNavigator />
+            </View>
+        )
+
     }
 }
 
@@ -172,7 +190,11 @@ const styles = StyleSheet.create({
         margin: 10
     },
     tabStyle: {
-        minWidth: 50
+        padding: 0,
+    },
+    labelStyle: {
+        margin: 0,
+        fontSize: 13
     },
     indicatorContainer: {
         alignItems: 'center'

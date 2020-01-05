@@ -10,20 +10,20 @@ import {handleData} from '../ActionUtil';
  * @param {string} pageSize
  * @return {function}
  */
-export function onLoadPopularData(storeName, url, pageSize) {
-    return dispath => {
-        dispath({
-            type: types.POPULAR_REFRESH,
+export function onRefreshTrending(storeName, url, pageSize) {
+    return dispatch => {
+        dispatch({
+            type: types.TRENDING_REFRESH,
             storeName
         });
         let dataStore = new DataStore();
-        dataStore.fetchData(url,FLAG_STORAGE.flag_popular)
+        dataStore.fetchData(url, FLAG_STORAGE.flag_trending)
             .then(data => {
-                handleData(types.POPULAR_REFRESH_SUCCESS,dispath, storeName, data, pageSize)
+                handleData(types.TRENDING_REFRESH_SUCCESS,dispatch, storeName, data, pageSize)
             })
             .catch(error => {
                 console.log(error);
-                dispath({
+                dispatch({
                     type: types.POPULAR_REFRESH_FAIL,
                     storeName,
                     error
@@ -34,6 +34,7 @@ export function onLoadPopularData(storeName, url, pageSize) {
 }
 
 
+
 /**
  * 
  * @param {string} storeName 
@@ -42,7 +43,7 @@ export function onLoadPopularData(storeName, url, pageSize) {
  * @param {array} dataArray 
  * @param {function} callback 
  */
-export function onLoadMorePopularData(storeName, pageIndex, pageSize, dataArray = [], callback) {
+export function onLoadMoreTrendingData(storeName, pageIndex, pageSize, dataArray = [], callback) {
     return dispatch => {
         setTimeout(() => {  //模拟网络请求
             if ((pageIndex - 1) * pageSize >= dataArray.length) {  //加载完全部数据
@@ -50,7 +51,7 @@ export function onLoadMorePopularData(storeName, pageIndex, pageSize, dataArray 
                     callback('no more data')
                 }
                 dispatch({
-                    type: types.POPULAR_LOAD_MORE__FAIL,
+                    type: types.TRENDING_LOAD_MORE__FAIL,
                     error: 'no more data',
                     storeName,
                     pageIndex: --pageIndex,
@@ -62,7 +63,7 @@ export function onLoadMorePopularData(storeName, pageIndex, pageSize, dataArray 
                 let length = dataArray.length;
                 let max = pageSize * pageIndex > length ? length : pageSize * pageIndex;
                 dispatch({
-                    type: types.POPULAR_LOAD_MORE__SUCCESS,
+                    type: types.TRENDING_LOAD_MORE__SUCCESS,
                     storeName,
                     pageIndex,
                     projectModes: dataArray.slice(0, max),

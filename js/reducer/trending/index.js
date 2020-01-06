@@ -33,7 +33,8 @@ export default function onAction(state = defaultState, action) {
                 ...state,
                 [action.storeName]: {  // 这里只改变loading状态而不能设置items,否则会刷新时有空白
                     ...state[action.storeName],
-                    isLoading: true
+                    isLoading: true,
+                    hideLoadingMore: true,
                 }
 
             }

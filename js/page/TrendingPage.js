@@ -162,7 +162,9 @@ class Tab extends Component {
     }
 
     genIndicator() {
-        return this._getStore().hideLoadingMore ?
+        let {items,hideLoadingMore} = this._getStore();
+        if(!items || items.length === 0) return null;
+        return hideLoadingMore ?
             <NoDataItem /> :
             <View style={styles.indicatorContainer}>
                 <ActivityIndicator

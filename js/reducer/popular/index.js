@@ -25,7 +25,7 @@ export default function onAction(state = defaultState, action) {
                     projectModes: action.projectModes,
                     isLoading: false,
                     hideLoadingMore: false,
-                    pageIndex:action.pageIndex
+                    pageIndex: action.pageIndex
                 }
             }
         case types.POPULAR_REFRESH:
@@ -33,7 +33,8 @@ export default function onAction(state = defaultState, action) {
                 ...state,
                 [action.storeName]: {  // 这里只改变loading状态而不能设置items,否则会刷新时有空白
                     ...state[action.storeName],
-                    isLoading: true
+                    isLoading: true,
+                    hideLoadingMore: true,
                 }
 
             }
@@ -42,7 +43,8 @@ export default function onAction(state = defaultState, action) {
                 ...state,
                 [action.storeName]: {
                     ...state[action.storeName],
-                    isLoading: false
+                    isLoading: false,
+
                 }
 
             }
@@ -57,16 +59,16 @@ export default function onAction(state = defaultState, action) {
                 }
 
             }
-            case types.POPULAR_LOAD_MORE__FAIL:
-                return {
-                    ...state,
-                    [action.storeName]: {
-                        ...state[action.storeName],
-                        hideLoadingMore: true,
-                        pageIndex:action.pageIndex
-                    }
-    
+        case types.POPULAR_LOAD_MORE__FAIL:
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    hideLoadingMore: true,
+                    pageIndex: action.pageIndex
                 }
+
+            }
         default:
             return state
     }

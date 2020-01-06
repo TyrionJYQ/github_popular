@@ -97,6 +97,12 @@ class Tab extends Component {
     }
 
     loadData(loadMore) {
+        if(!this.loadData.loadTime) {
+            console.log(this.loadData.loadTime = 1)
+        } else {
+            console.log(++this.loadData.loadTime)
+        }
+        
         const { onLoadPolularData, onLoadMorePopularData } = this.props;
         const url = this._genFetchUrl(this.storeName);
         const store = this._getStore()
@@ -115,7 +121,9 @@ class Tab extends Component {
     }
 
     genIndicator() {
-        return this._getStore().hideLoadingMore ?
+       let {items,hideLoadingMore} = this._getStore();
+       if(!items || items.length === 0) return null;
+        return hideLoadingMore ?
             <NoDataItem /> :
             <View style={styles.indicatorContainer}>
                 <ActivityIndicator

@@ -68,7 +68,7 @@ class MyPage extends Component {
                 <Text onPress={() => {
                     NavigationUtil.goPage({
                         navigation: this.props.navigation
-                    }, "DetailPage")
+                    }, "Detail")
                 }}>跳转到详情页</Text>
               
             </View>

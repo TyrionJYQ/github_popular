@@ -8,7 +8,7 @@ import PopularItem from '../common/popularItem'
 import NoDataItem from '../common/NoDataItem'
 import NavigationBar from '../common/NavigationBar'
 import Toast from 'react-native-easy-toast';
-
+import NavigationUtil from "../navigator/NavigationUtil";
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -117,7 +117,13 @@ class Tab extends Component {
 
     }
     renderItem({ item }) {
-        return <PopularItem item={item} />
+        return <PopularItem item={item} onSelect = {
+            () => {
+                console.log('go detail page')
+                NavigationUtil.goPage({projectModel: item},'Detail')
+            
+            }
+        }/>
     }
 
     genIndicator() {

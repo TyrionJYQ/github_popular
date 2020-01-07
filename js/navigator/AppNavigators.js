@@ -22,7 +22,10 @@ const MainNavigator = createStackNavigator({
         }
     },
     Detail: {
-        screen: DetailPage
+        screen: DetailPage,
+        navigationOptions: {
+            header: null
+        }
     },
     DataStoreDemoPage: {
         screen: DataStoreDemoPage,

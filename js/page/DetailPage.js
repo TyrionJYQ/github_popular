@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View, DeviceInfo} from 'react-native';
 import WebView from 'react-native-webview';
 import NavigationBar from '../common/NavigationBar'
 import ViewUtil from "../util/ViewUtil";
-
+import NavigationUtil from '../navigator/NavigationUtil'
 const TRENDING_URL = 'https://github.com/';
 
 const THEME_COLOR = '#678';
@@ -44,7 +44,7 @@ export default class DetailPage extends Component {
         if (this.state.canGoBack) {
             this.webView.goBack();
         } else {
-           
+            NavigationUtil.goBack(this.props.navigation);
         }
     }
 

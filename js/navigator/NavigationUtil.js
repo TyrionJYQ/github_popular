@@ -6,10 +6,10 @@ export default class NavigationUtil {
      */
     static goPage(params, page) {
         const navigation = NavigationUtil.navigation;
-        if(!navigation) {
+        if (!navigation) {
             return console.error('NavigationUtil.navigation can be null or undefined')
         }
-        navigation.navigate(page,{...params})
+        navigation.navigate(page, { ...params })
     }
 
     /**
@@ -19,5 +19,14 @@ export default class NavigationUtil {
     static resetToHomePage(params) {
         const { navigation } = params;
         navigation.navigate('Main')
+    }
+
+
+    /**
+     * 返回上一页
+     * @param navigation
+     */
+    static goBack(navigation) {
+        navigation.goBack();
     }
 }

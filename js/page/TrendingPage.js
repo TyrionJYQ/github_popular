@@ -10,7 +10,7 @@ import NavigationBar from '../common/NavigationBar'
 import Toast from 'react-native-easy-toast';
 import TrendingDialog, { TimeSpans } from '../common/TrendingDialog'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+import NavigationUtil from "../navigator/NavigationUtil";
 
 
 const URL = 'https://github.com/trending/';
@@ -164,7 +164,8 @@ class Tab extends Component {
 
     }
     renderItem({ item }) {
-        return <TrendingItem item={item} />
+        return <TrendingItem item={item} 
+                onSelect={ () => { NavigationUtil.goPage({projectModel: item},'Detail')}}/>
     }
 
     genIndicator() {

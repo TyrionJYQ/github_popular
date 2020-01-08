@@ -10,10 +10,12 @@ import NavigationBar from '../common/NavigationBar'
 import Toast from 'react-native-easy-toast';
 import NavigationUtil from "../navigator/NavigationUtil";
 
+
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 const THEME_COLOR = '#a58';
 const PAGE_SIZE = 10;
+
 export default class PopularPage extends Component {
     constructor(props) {
         super(props);
@@ -118,11 +120,7 @@ class Tab extends Component {
     }
     renderItem({ item }) {
         return <PopularItem item={item} onSelect = {
-            () => {
-                console.log('go detail page')
-                NavigationUtil.goPage({projectModel: item},'Detail')
-            
-            }
+            () => { NavigationUtil.goPage({projectModel: item},'Detail')}
         }/>
     }
 

@@ -25,7 +25,7 @@ export default function onAction(state = defaultState, action) {
                     projectModes: action.projectModes,
                     isLoading: false,
                     hideLoadingMore: false,
-                    pageIndex:action.pageIndex
+                    pageIndex: action.pageIndex
                 }
             }
         case types.TRENDING_REFRESH:
@@ -58,24 +58,24 @@ export default function onAction(state = defaultState, action) {
                 }
 
             }
-            case types.TRENDING_LOAD_MORE__FAIL:
-                return {
-                    ...state,
-                    [action.storeName]: {
-                        ...state[action.storeName],
-                        hideLoadingMore: true,
-                        pageIndex:action.pageIndex
-                    }
-    
+        case types.TRENDING_LOAD_MORE__FAIL:
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    hideLoadingMore: true,
+                    pageIndex: action.pageIndex
                 }
-                case types.FLUSH_TRENDING_FAVORITE://刷新收藏状态
-                return {
-                    ...state,
-                    [action.storeName]: {
-                        ...state[action.storeName],
-                        projectModes: action.projectModes,
-                    }
-                };
+
+            }
+        case types.FLUSH_TRENDING_FAVORITE://刷新收藏状态
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    projectModes: action.projectModes,
+                }
+            };
         default:
             return state
     }

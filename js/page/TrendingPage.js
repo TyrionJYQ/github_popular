@@ -27,7 +27,7 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
 export default class TrendingPage extends Component {
     constructor(props) {
         super(props);
-        this.languages = ['PHP', 'JavaScript', 'Java']
+        this.languages = ['Node', 'JavaScript', 'Java']
         this.dialog = React.createRef();
         this.state = {
             timeSpan: TimeSpans[0],

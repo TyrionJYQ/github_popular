@@ -9,8 +9,8 @@ import PopularPage from '../page/PopularPage';
 import FavoritePage from '../page/FavoritePage';
 import TrendingPage from '../page/TrendingPage';
 import MyPage from '../page/MyPage';
-
-
+import EventBus from 'react-native-event-bus'
+import eventTypes from '../util/EventTypes'
 const TABS = {
     PopularPage: {
         screen: PopularPage,
@@ -81,7 +81,14 @@ const TABS = {
     render() {
         console.disableYellowBox = true;
         const Tabs = this._genTabNavigator()
-        return <Tabs />
+        return <Tabs onNavigationStateChange = {
+            (prevState, nextState, action) => {
+                EventBus.getInstance().fireEvent(eventTypes.bottom_tab_select, {
+                    from: prevState.index,
+                    to: nextState.index
+                })
+            }
+        }/>
     }
 }
 

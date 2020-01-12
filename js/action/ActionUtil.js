@@ -1,3 +1,6 @@
+
+import ProjectModel from '../model/projectModel';
+import Utils from '../util/Util'
 /**
  * 
  * @param {*} actionTpe 
@@ -5,24 +8,47 @@
  * @param {*} storeName 
  * @param {*} data 
  * @param {*} pageSize 
+ * @param {*} favoriteDao
  */
 
 
-export function handleData(actionTpe, dispatch, storeName, data,pageSize) {
+export function handleData(actionType, dispatch, storeName, data, pageSize, favoriteDao) {
     let fixItems = [];
-    if(data && data.data && data.data) {
-        if(Array.isArray(data.data)) {
+    if (data && data.data && data.data) {
+        if (Array.isArray(data.data)) {
             fixItems = data.data;
         } else if (Array.isArray(data.data.items)) {
             fixItems = data.data.items;
         }
     }
-    dispatch({
-        type: actionTpe,
-        projectModes: pageSize> fixItems.length ? fixItems : fixItems.slice(0,pageSize),
-        items:  fixItems,
-        storeName,
-        pageIndex: 1,
-
+    // 初次加载显示的数据
+    let showItems = pageSize > fixItems.length ? fixItems : fixItems.slice(0, pageSize);
+    _projectModes(showItems,favoriteDao, projectModes => {
+        dispatch({
+            type: actionType,
+            projectModes,
+            items: fixItems,
+            storeName,
+            pageIndex: 1,
+        })
     })
+    
+}
+
+
+export async function _projectModes(showItems, favoriteDao, callback) {
+    let keys = [];
+    try {
+        keys = await favoriteDao.getFavoriteKeys();
+    } catch (error) {
+        console.log(error)
+    };
+    let projectModes = [];
+    for (let i = 0, len = showItems.length; i < len; i++) {
+        let item = showItems[i];
+        projectModes.push(new ProjectModel(item, Utils.checkFavorite(item, keys)))
+    }
+    if (typeof callback === 'function') {
+        callback(projectModes);
+    }
 }

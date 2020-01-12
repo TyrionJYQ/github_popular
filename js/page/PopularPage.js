@@ -9,12 +9,17 @@ import NoDataItem from '../common/NoDataItem'
 import NavigationBar from '../common/NavigationBar'
 import Toast from 'react-native-easy-toast';
 import NavigationUtil from "../navigator/NavigationUtil";
-
+import { FLAG_STORAGE } from '../expand/dao/DataStore'
+import FavoriteDao from '../expand/dao/FavoriteDao'
+import FavoriteUtil from '../util/FavoriteUtil'
+import eventTypes from '../util/EventTypes'
+import EventBus from 'react-native-event-bus'
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 const THEME_COLOR = '#a58';
 const PAGE_SIZE = 10;
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 
 export default class PopularPage extends Component {
     constructor(props) {
@@ -77,7 +82,9 @@ class Tab extends Component {
         const { tabLabel } = this.props;
         this.storeName = tabLabel;
         this.toast = React.createRef();
-        
+        this.refreshPopular = false;
+       
+
     }
     _genFetchUrl(key) {
         return URL + key + QUERY_STR;
@@ -98,35 +105,37 @@ class Tab extends Component {
         return store;
     }
 
-    loadData(loadMore) {
-        if(!this.loadData.loadTime) {
-            console.log(this.loadData.loadTime = 1)
-        } else {
-            console.log(++this.loadData.loadTime)
-        }
-        
-        const { onLoadPolularData, onLoadMorePopularData } = this.props;
+    loadData(loadMore,refreshPopular) {
+        const { onLoadPolularData, onLoadMorePopularData,onFlushPopularFavorite } = this.props;
         const url = this._genFetchUrl(this.storeName);
         const store = this._getStore()
         if (loadMore) {
-            onLoadMorePopularData(this.storeName, ++store.pageIndex, PAGE_SIZE, store.items, data => {
+            onLoadMorePopularData(this.storeName, ++store.pageIndex, PAGE_SIZE, store.items, favoriteDao, data => {
                 console.log(data);
                 this.toast.current.show('没有更多了')
             })
-        } else {
-            onLoadPolularData(this.storeName, url, PAGE_SIZE)
+        } else if(refreshPopular) {
+            onFlushPopularFavorite(this.storeName,store.pageIndex,PAGE_SIZE,store.items, favoriteDao);
+        }else {
+            onLoadPolularData(this.storeName, url, PAGE_SIZE, favoriteDao)
         }
 
     }
+    onFavorite(item, isFavorite) {
+        FavoriteUtil.onFavorite(this.favoriteDao, item, isFavorite, this.props.flag);
+    }
+
     renderItem({ item }) {
-        return <PopularItem item={item} onSelect = {
-            () => { NavigationUtil.goPage({projectModel: item},'Detail')}
-        }/>
+        return <PopularItem
+            projectModel={item}
+            onSelect={callback => { NavigationUtil.goPage({ projectModel: item, flag: FLAG_STORAGE.flag_popular, callback }, 'Detail') }}
+            onFavorite={(item, isFavorite) => { FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_popular) }}
+        />
     }
 
     genIndicator() {
-       let {items,hideLoadingMore} = this._getStore();
-       if(!items || items.length === 0) return null;
+        let { items, hideLoadingMore } = this._getStore();
+        if (!items || items.length === 0) return null;
         return hideLoadingMore ?
             <NoDataItem /> :
             <View style={styles.indicatorContainer}>
@@ -138,6 +147,14 @@ class Tab extends Component {
     }
     componentDidMount() {
         this.loadData();
+         EventBus.getInstance().addListener(eventTypes.favorite_changed_popular, this.favoriteChangeListener = () => {
+            this.refreshPopular = true;
+        });
+        EventBus.getInstance().addListener(eventTypes.bottom_tab_select, this.bottomTabSelectListener = (data) => {
+            if (data.to === 0 && this.refreshPopular) {
+                this.loadData(null, true);
+            }
+        })
     }
 
 
@@ -148,7 +165,7 @@ class Tab extends Component {
                 <FlatList
                     data={store.projectModes}
                     renderItem={data => this.renderItem(data)}
-                    keyExtractor={item => item.id.toString()}
+                    keyExtractor={item => "" + item.item.id}
                     refreshControl={
                         <RefreshControl
                             title={'loading'}
@@ -185,8 +202,9 @@ const mapState = state => ({
 })
 
 const mapDispatch = dispatch => ({
-    onLoadPolularData: (storeName, url, pageSize) => dispatch(actions.onLoadPopularData(storeName, url, pageSize)),
-    onLoadMorePopularData: (storeName, pageIndex, pageSize, dataArray, callback) => dispatch(actions.onLoadMorePopularData(storeName, pageIndex, pageSize, dataArray, callback)),
+    onLoadPolularData: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onLoadPopularData(storeName, url, pageSize, favoriteDao)),
+    onLoadMorePopularData: (storeName, pageIndex, pageSize, dataArray, favoriteDao, callback) => dispatch(actions.onLoadMorePopularData(storeName, pageIndex, pageSize, dataArray, favoriteDao, callback)),
+    onFlushPopularFavorite: (storeName, pageIndex, pageSize, dataArray, favoriteDao) =>dispatch(actions.onFlushPopularFavorite(storeName, pageIndex, pageSize, dataArray, favoriteDao))
 })
 
 const PopularTab = connect(mapState, mapDispatch)(Tab)

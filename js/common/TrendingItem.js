@@ -1,37 +1,27 @@
-import React, {Component} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View,} from 'react-native'
+import React, { Component } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HTMLView from 'react-native-htmlview';
+import BaseItem from "./BaseItem";
 
 
-export default class TrendingItem extends Component {
+export default class TrendingItem extends BaseItem {
     render() {
-        const { item } = this.props;
+        const { projectModel } = this.props;
+        const { item } = projectModel;
         if (!item) return null;
-        let favoriteButton =
-            <TouchableOpacity
-                style={{ padding: 6 }}
-                onPress={() => {
-                }}
-                underlayColor={'transparent'}
-            >
-                <FontAwesome
-                    name={'star-o'}
-                    size={26}
-                    style={{ color: 'red' }}
-                />
-            </TouchableOpacity>;
+        let favoriteButton = this._favoriteIcon();
         let description = '<p>' + item.description + '</p>';
-
         return (
             <TouchableOpacity
-                onPress={this.props.onSelect}
+                // onPress={this.props.onSelect}
+                onPress={() => this.onItemClick()}
             >
                 <View style={styles.cell_container}>
                     <Text style={styles.title}>
                         {item.fullName}
                     </Text>
-                   
+
                     <HTMLView
                         value={description}
                         onLinkPress={(url) => {
@@ -41,7 +31,7 @@ export default class TrendingItem extends Component {
                             a: styles.description,
                         }}
                     />
-                     <Text style={styles.description}>
+                    <Text style={styles.description}>
                         {item.meta}
                     </Text>
                     <View style={styles.row}>

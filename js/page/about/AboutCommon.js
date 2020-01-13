@@ -23,7 +23,6 @@ export default class AboutCommon {
     }
 
     componentDidMount() {
-        this.backPress.componentDidMount();
         fetch('http://www.devio.org/io/GitHubPopular/json/github_app_config.json')
             .then(response => {
                 if (response.ok) {
@@ -42,9 +41,9 @@ export default class AboutCommon {
                 console(e);
             })
     }
-
+    
     componentWillUnmount() {
-        // this.backPress.componentWillUnmount();
+       
     }
 
     onShare() {

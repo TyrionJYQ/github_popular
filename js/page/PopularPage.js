@@ -14,6 +14,7 @@ import FavoriteDao from '../expand/dao/FavoriteDao'
 import FavoriteUtil from '../util/FavoriteUtil'
 import eventTypes from '../util/EventTypes'
 import EventBus from 'react-native-event-bus'
+import { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -21,26 +22,33 @@ const THEME_COLOR = '#a58';
 const PAGE_SIZE = 10;
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 
-export default class PopularPage extends Component {
+ class PopularPage extends Component {
     constructor(props) {
         super(props);
-        this.languages = ['PHP', 'JAVA', 'html', 'Css3']
+        const { onLoadLanguage } = this.props;
+        onLoadLanguage(FLAG_LANGUAGE.flag_key);
+
     }
 
     _genTab() {
         const tabs = {};
-        this.languages.forEach((language, index) => {
-            tabs[`${index}`] = {
-                screen: props => <PopularTab {...props} tabLabel={language} />,
-                navigationOptions: {
-                    title: language
+         const {keys} = this.props;
+         keys.forEach((item, index) => {
+            if (item.checked) {
+                tabs[`tab${index}`] = {
+                    screen: props => <PopularTab {...props} tabLabel={item.name} />,
+                    navigationOptions: {
+                        title: item.name
+                    }
                 }
             }
-        })
+        });
         return tabs;
     }
     render() {
         const tabs = this._genTab();
+        debugger
+        const {keys} = this.props;
         let statusBar = {
             backgroundColor: '#eaeaea', //状态栏背景色
             barStyle: 'light-content'
@@ -50,7 +58,7 @@ export default class PopularPage extends Component {
             statusBar={statusBar}
             style={{ backgroundColor: THEME_COLOR }}
         />
-        const TabNavigator = createAppContainer(createMaterialTopTabNavigator(tabs, {
+        const TabNavigator =  keys.length ? createAppContainer(createMaterialTopTabNavigator(tabs, {
             tabBarOptions: {
                 tabStyle: styles.tabStyle,
                 upperCaseLabel: false,
@@ -65,16 +73,23 @@ export default class PopularPage extends Component {
                 },
                 labelStyle: styles.labelStyle,//文字的样式
             }
-        }))
+        })) : null
         return (
             <View style={{ flex: 1, marginTop: 0, }}>
                 {navigationBar}
-                <TabNavigator />
+                {TabNavigator && <TabNavigator/>}
             </View>
         )
 
     }
 }
+const mapPopularStateToProps = state => ({
+    keys: state.language.keys,
+});
+const mapPopularDispatchToProps = dispatch => ({
+    onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag))
+});
+export default connect(mapPopularStateToProps,mapPopularDispatchToProps)(PopularPage)
 
 class Tab extends Component {
     constructor(props) {
@@ -83,7 +98,7 @@ class Tab extends Component {
         this.storeName = tabLabel;
         this.toast = React.createRef();
         this.refreshPopular = false;
-       
+
 
     }
     _genFetchUrl(key) {
@@ -105,8 +120,8 @@ class Tab extends Component {
         return store;
     }
 
-    loadData(loadMore,refreshPopular) {
-        const { onLoadPolularData, onLoadMorePopularData,onFlushPopularFavorite } = this.props;
+    loadData(loadMore, refreshPopular) {
+        const { onLoadPolularData, onLoadMorePopularData, onFlushPopularFavorite } = this.props;
         const url = this._genFetchUrl(this.storeName);
         const store = this._getStore()
         if (loadMore) {
@@ -114,9 +129,9 @@ class Tab extends Component {
                 console.log(data);
                 this.toast.current.show('没有更多了')
             })
-        } else if(refreshPopular) {
-            onFlushPopularFavorite(this.storeName,store.pageIndex,PAGE_SIZE,store.items, favoriteDao);
-        }else {
+        } else if (refreshPopular) {
+            onFlushPopularFavorite(this.storeName, store.pageIndex, PAGE_SIZE, store.items, favoriteDao);
+        } else {
             onLoadPolularData(this.storeName, url, PAGE_SIZE, favoriteDao)
         }
 
@@ -147,7 +162,7 @@ class Tab extends Component {
     }
     componentDidMount() {
         this.loadData();
-         EventBus.getInstance().addListener(eventTypes.favorite_changed_popular, this.favoriteChangeListener = () => {
+        EventBus.getInstance().addListener(eventTypes.favorite_changed_popular, this.favoriteChangeListener = () => {
             this.refreshPopular = true;
         });
         EventBus.getInstance().addListener(eventTypes.bottom_tab_select, this.bottomTabSelectListener = (data) => {
@@ -204,7 +219,7 @@ const mapState = state => ({
 const mapDispatch = dispatch => ({
     onLoadPolularData: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onLoadPopularData(storeName, url, pageSize, favoriteDao)),
     onLoadMorePopularData: (storeName, pageIndex, pageSize, dataArray, favoriteDao, callback) => dispatch(actions.onLoadMorePopularData(storeName, pageIndex, pageSize, dataArray, favoriteDao, callback)),
-    onFlushPopularFavorite: (storeName, pageIndex, pageSize, dataArray, favoriteDao) =>dispatch(actions.onFlushPopularFavorite(storeName, pageIndex, pageSize, dataArray, favoriteDao))
+    onFlushPopularFavorite: (storeName, pageIndex, pageSize, dataArray, favoriteDao) => dispatch(actions.onFlushPopularFavorite(storeName, pageIndex, pageSize, dataArray, favoriteDao))
 })
 
 const PopularTab = connect(mapState, mapDispatch)(Tab)

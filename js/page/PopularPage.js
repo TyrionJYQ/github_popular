@@ -72,7 +72,8 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
                     backgroundColor: '#fff'
                 },
                 labelStyle: styles.labelStyle,//文字的样式
-            }
+            },
+            lazy: true
         })) : null
         return (
             <View style={{ flex: 1, marginTop: 0, }}>

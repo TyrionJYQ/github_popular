@@ -103,7 +103,8 @@ class TrendingPage extends Component {
                         backgroundColor: '#fff'
                     },
                     labelStyle: styles.labelStyle
-                }
+                },
+                lazy: true
             }))
         }
         return this.tabNav;

@@ -9,7 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { MORE_MENU } from '../common/MORE_MENU'
 import GlobalStyles from "../res/styles/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
-import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
+import { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
 
 
 const THEME_COLOR = '#678';
@@ -81,6 +81,14 @@ class MyPage extends Component {
                 break;
             case MORE_MENU.About_Author:
                 RouteName = 'AboutMePage';
+                break;
+            case MORE_MENU.Sort_Key:
+                RouteName = 'SortKeyPage';
+                params.flag = FLAG_LANGUAGE.flag_key;
+                break;
+            case MORE_MENU.Sort_Language:
+                RouteName = 'SortKeyPage';
+                params.flag = FLAG_LANGUAGE.flag_language;
                 break;
             case MORE_MENU.Custom_Key:
             case MORE_MENU.Custom_Language:

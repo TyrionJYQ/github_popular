@@ -93,7 +93,7 @@ const TABS = {
 }
 
 const mapStateToProps = state => ({
-    theme: state.theme.theme
+    theme:state.theme.theme.themeColor
 })
 
 class TabBarComponent extends Component {

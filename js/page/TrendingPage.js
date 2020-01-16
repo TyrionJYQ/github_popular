@@ -40,12 +40,12 @@ class TrendingPage extends Component {
 
     _genTab() {
         const tabs = {};
-        const { keys } = this.props;
+        const { keys,themeColor } = this.props;
         this.preKeys = keys;
         keys.forEach((item, index) => {
             if (item.checked) {
                 tabs[`tab${index}`] = {
-                    screen: props => <TrendingTab {...props} timeSpan={this.state.timeSpan} tabLabel={item.name} />,
+                    screen: props => <TrendingTab {...props} timeSpan={this.state.timeSpan} tabLabel={item.name} themeColor={themeColor}/>,
                     navigationOptions: {
                         title: item.name
                     }
@@ -95,7 +95,7 @@ class TrendingPage extends Component {
                     upperCaseLabel: false,
                     scrollEnabled: true,
                     style: {
-                        backgroundColor: '#a58',
+                        backgroundColor: this.props.themeColor,
                         height: 40
                     },
                     indicatorStyle: {
@@ -111,7 +111,7 @@ class TrendingPage extends Component {
     }
 
     render() {
-        const { keys } = this.props;
+        const { keys,themeColor } = this.props;
         let statusBar = {
             backgroundColor: '#eaeaea', //状态栏背景色
             barStyle: 'light-content'
@@ -120,7 +120,7 @@ class TrendingPage extends Component {
             title={'趋势'}
             titleView={this.renderTitleView()}
             statusBar={statusBar}
-            style={{ backgroundColor: THEME_COLOR }}
+            style={{ backgroundColor: themeColor }}
         />
         const TabNavigator = keys.length ? this._genTabNav() : null;
         return (
@@ -139,6 +139,7 @@ class TrendingPage extends Component {
 }
 const mapTrendingStateToProps = state => ({
     keys: state.language.languages,
+    themeColor: state.theme.theme.themeColor
 });
 const mapTrendingDispatchToProps = dispatch => ({
     onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag))
@@ -193,6 +194,7 @@ class Tab extends Component {
     }
     renderItem({ item }) {
         return <TrendingItem projectModel={item}
+        theme = {this.props.themeColor}
             onSelect={callback => { NavigationUtil.goPage({ projectModel: item, flag: FLAG_STORAGE.flag_trending, callback }, 'Detail') }}
             onFavorite={(item, isFavorite) => { FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending) }}
         />
@@ -244,8 +246,8 @@ class Tab extends Component {
                     refreshControl={
                         <RefreshControl
                             title={'loading'}
-                            titleColor={THEME_COLOR}
-                            colors={[THEME_COLOR]}
+                            titleColor={this.props.themeColor}
+                            colors={[this.props.themeColor]}
                             refreshing={store.isLoading}
                             onRefresh={() => this.loadData()}
                         />}

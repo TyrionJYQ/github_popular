@@ -3,7 +3,8 @@ import { TouchableOpacity, } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {PropTypes} from 'prop-types';
 
-export default class BaseItem extends Component {
+
+export default  class BaseItem extends Component {
     static propTypes = {
         projectModel: PropTypes.object,
         onSelect: PropTypes.func,
@@ -57,8 +58,12 @@ export default class BaseItem extends Component {
             <FontAwesome
                 name={this.state.isFavorite ? 'star' : 'star-o'}
                 size={26}
-                style={{color: '#678'}}
+                style={{color: this.props.theme}}
             />
         </TouchableOpacity>
     }
 }
+
+const mapStateToProps = state => ({
+    theme: state.theme.theme.themeColor
+});

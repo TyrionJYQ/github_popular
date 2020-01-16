@@ -10,7 +10,8 @@ import { MORE_MENU } from '../common/MORE_MENU'
 import GlobalStyles from "../res/styles/GlobalStyles";
 import ViewUtil from "../util/ViewUtil";
 import { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
-
+import { mapStateForTheme } from '../mapping/mapState'
+import { mapDispatchForTheme } from '../mapping/mapDispatch'
 
 const THEME_COLOR = '#678';
 
@@ -81,6 +82,10 @@ class MyPage extends Component {
                 break;
             case MORE_MENU.About_Author:
                 RouteName = 'AboutMePage';
+                break;
+            case MORE_MENU.Custom_Theme:
+                const { onShowCustomThemeView } = this.props;
+                onShowCustomThemeView(true);
                 break;
             case MORE_MENU.Sort_Key:
                 RouteName = 'SortKeyPage';
@@ -186,13 +191,9 @@ class MyPage extends Component {
     }
 }
 
-const mapStateToProps = state => ({});
 
-const mapDispatchToProps = dispatch => ({
-    onThemeChange: (theme) => dispatch(onThemeChange(theme)),
-});
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyPage);
+export default connect(mapStateForTheme, mapDispatchForTheme)(MyPage);
 
 
 

@@ -31,12 +31,13 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     }
 
     _genTab() {
+        debugger
         const tabs = {};
          const {keys} = this.props;
          keys.forEach((item, index) => {
             if (item.checked) {
                 tabs[`tab${index}`] = {
-                    screen: props => <PopularTab {...props} tabLabel={item.name} />,
+                    screen: props => <PopularTab {...props} tabLabel={item.name}  theme={ this.props.theme}/>,
                     navigationOptions: {
                         title: item.name
                     }
@@ -48,7 +49,7 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     render() {
         const tabs = this._genTab();
         debugger
-        const {keys} = this.props;
+        const {keys,theme} = this.props;
         let statusBar = {
             backgroundColor: '#eaeaea', //状态栏背景色
             barStyle: 'light-content'
@@ -56,7 +57,7 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
         let navigationBar = <NavigationBar
             title={'最热'}
             statusBar={statusBar}
-            style={{ backgroundColor: THEME_COLOR }}
+            style={{ backgroundColor: this.props.theme }}
         />
         const TabNavigator =  keys.length ? createAppContainer(createMaterialTopTabNavigator(tabs, {
             tabBarOptions: {
@@ -64,7 +65,7 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
                 upperCaseLabel: false,
                 scrollEnabled: true,
                 style: {
-                    backgroundColor: '#a58',
+                    backgroundColor: theme,
                     height: 40
                 },
                 indicatorStyle: {
@@ -86,6 +87,7 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 }
 const mapPopularStateToProps = state => ({
     keys: state.language.keys,
+    theme: state.theme.theme.themeColor
 });
 const mapPopularDispatchToProps = dispatch => ({
     onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag))
@@ -143,6 +145,7 @@ class Tab extends Component {
 
     renderItem({ item }) {
         return <PopularItem
+            theme={this.props.theme}
             projectModel={item}
             onSelect={callback => { NavigationUtil.goPage({ projectModel: item, flag: FLAG_STORAGE.flag_popular, callback }, 'Detail') }}
             onFavorite={(item, isFavorite) => { FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_popular) }}
@@ -185,8 +188,8 @@ class Tab extends Component {
                     refreshControl={
                         <RefreshControl
                             title={'loading'}
-                            titleColor={THEME_COLOR}
-                            colors={[THEME_COLOR]}
+                            titleColor={ this.props.theme}
+                            colors={[this.props.theme]}
                             refreshing={store.isLoading}
                             onRefresh={() => this.loadData()}
                         />}
@@ -214,7 +217,8 @@ class Tab extends Component {
 }
 
 const mapState = state => ({
-    popular: state.popular
+    popular: state.popular,
+ 
 })
 
 const mapDispatch = dispatch => ({

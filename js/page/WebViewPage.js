@@ -4,14 +4,17 @@ import NavigationBar from '../common/NavigationBar'
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
 import WebView from 'react-native-webview'
+import {mapStateForTheme} from '../mapping/mapState'
+import {connect} from 'react-redux'
 
-const THEME_COLOR = '#678';
+;
 
-export default class WebViewPage extends Component {
+class WebViewPage extends Component {
     constructor(props) {
         super(props);
         this.params = this.props.navigation.state.params;
-        const {title, url} = this.params;
+        const {title, url,themeColor} = this.params;
+        this.themeColor = themeColor;
         this.state = {
             title: title,
             url: url,
@@ -44,7 +47,7 @@ export default class WebViewPage extends Component {
     render() {
         let navigationBar = <NavigationBar
             title={this.state.title}
-            style={{backgroundColor: THEME_COLOR}}
+            style={{backgroundColor:  this.props.theme.themeColor}}
             leftButton={ViewUtil.getLeftBackButton(() => this.onBackPress())}
         />;
 
@@ -62,9 +65,10 @@ export default class WebViewPage extends Component {
     }
 }
 
+export default connect(mapStateForTheme)(WebViewPage)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0
+        // marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 
     },
 });

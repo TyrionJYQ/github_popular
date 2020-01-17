@@ -18,7 +18,6 @@ import { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
-const THEME_COLOR = '#a58';
 const PAGE_SIZE = 10;
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 
@@ -31,7 +30,7 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     }
 
     _genTab() {
-        debugger
+      
         const tabs = {};
          const {keys} = this.props;
          keys.forEach((item, index) => {
@@ -48,7 +47,6 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     }
     render() {
         const tabs = this._genTab();
-        debugger
         const {keys,theme} = this.props;
         let statusBar = {
             backgroundColor: '#eaeaea', //状态栏背景色
@@ -147,7 +145,7 @@ class Tab extends Component {
         return <PopularItem
             theme={this.props.theme}
             projectModel={item}
-            onSelect={callback => { NavigationUtil.goPage({ projectModel: item, flag: FLAG_STORAGE.flag_popular, callback }, 'Detail') }}
+            onSelect={callback => { NavigationUtil.goPage({ projectModel: item, flag: FLAG_STORAGE.flag_popular, themeColor: this.props.theme,callback }, 'Detail') }}
             onFavorite={(item, isFavorite) => { FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_popular) }}
         />
     }

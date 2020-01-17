@@ -8,7 +8,7 @@ import NavigationUtil from '../navigator/NavigationUtil'
 import FavoriteDao from '../expand/dao/FavoriteDao';
 const TRENDING_URL = 'https://github.com/';
 
-const THEME_COLOR = '#678';
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 
@@ -17,9 +17,10 @@ export default class DetailPage extends Component {
     constructor(props) {
         super(props);
         this.params = this.props.navigation.state.params;
-        const { projectModel, flag } = this.params;
+        const { projectModel, flag,themeColor } = this.params;
         this.favoriteDao = new FavoriteDao(flag)
         this.url = projectModel.item.html_url || TRENDING_URL + projectModel.item.fullName;
+        this.themeColor = themeColor
         const title = projectModel.item.full_name || projectModel.item.fullName;
         this.state = {
             title: title,
@@ -30,15 +31,7 @@ export default class DetailPage extends Component {
 
     }
 
-    componentDidMount() {
-
-    }
-
-    componentWillUnmount() {
-
-    }
-
-    onBackPress() {
+   onBackPress() {
         this.onBack();
         return true;
     }
@@ -71,7 +64,7 @@ export default class DetailPage extends Component {
                 <FontAwesome
                     name={this.state.isFavorite ? 'star' : 'star-o'}
                     size={20}
-                    style={{ color: 'white', marginRight: 10 }}
+                    style={{ color:'white', marginRight: 10 }}
                 />
             </TouchableOpacity>
             {ViewUtil.getShareButton(() => {
@@ -94,7 +87,7 @@ export default class DetailPage extends Component {
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
             titleLayoutStyle={titleLayoutStyle}
             title={this.state.title}
-            style={{ backgroundColor: THEME_COLOR }}
+            style={{ backgroundColor: this.themeColor }}
             rightButton={this.renderRightButton()}
         />;
 

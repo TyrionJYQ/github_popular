@@ -10,7 +10,7 @@ export function onLoadLanguage(flagKey) {
     return async dispatch => {
         try {
             let languages = await new LanguageDao(flagKey).fetch();
-            debugger
+          
             dispatch({type: Types.LANGUAGE_LOAD_SUCCESS, languages: languages, flag: flagKey})
         } catch (e) {
             console.log(e)

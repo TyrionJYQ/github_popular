@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { onThemeChange } from '../action/theme'
-import { Button, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import NavigationUtil from "../navigator/NavigationUtil";
 import NavigationBar from '../common/NavigationBar';
 import Feather from 'react-native-vector-icons/Feather'
@@ -13,7 +12,6 @@ import { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
 import { mapStateForTheme } from '../mapping/mapState'
 import { mapDispatchForTheme } from '../mapping/mapDispatch'
 
-const THEME_COLOR = '#678';
 
 
 class MyPage extends Component {
@@ -70,7 +68,7 @@ class MyPage extends Component {
     }
 
     onClick(menu) {
-        let RouteName, params = {};
+        let RouteName, params = { themeColor: this.props.theme.themeColor };
         switch (menu) {
             case MORE_MENU.Tutorial:
                 RouteName = 'WebViewPage';
@@ -110,18 +108,20 @@ class MyPage extends Component {
     }
 
     getItem(menu) {
-        return ViewUtil.getMenuItem(() => this.onClick(menu), menu, THEME_COLOR);
+        const { themeColor } = this.props.theme
+        return ViewUtil.getMenuItem(() => this.onClick(menu), menu, themeColor);
     }
     render() {
+        const { themeColor } = this.props.theme
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: themeColor,
             barStyle: 'light-content',
         };
         let navigationBar =
             <NavigationBar
                 title={'我的'}
                 statusBar={statusBar}
-                style={{ backgroundColor: THEME_COLOR }}
+                style={{ backgroundColor: themeColor }}
                 rightButton={this.getRightButton()}
                 leftButton={this.getLeftButton(() => this.onBack())}
             />;
@@ -139,7 +139,7 @@ class MyPage extends Component {
                                 size={40}
                                 style={{
                                     marginRight: 10,
-                                    color: THEME_COLOR
+                                    color: themeColor
                                 }}
                             />
                             <Text>GitHub Popular</Text>
@@ -150,7 +150,7 @@ class MyPage extends Component {
                             style={{
                                 marginRight: 10,
                                 alignSelf: 'center',
-                                color: THEME_COLOR,
+                                color: themeColor,
                             }} />
                     </TouchableOpacity>
                     <View style={GlobalStyles.line} />

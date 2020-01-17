@@ -8,13 +8,13 @@ import config from '../../res/data/config'
 import GlobalStyles from "../../res/styles/GlobalStyles";
 
 
-const THEME_COLOR = '#678';
 
 
 export default class AboutPage extends Component {
     constructor(props) {
         super(props);
         this.params = this.props.navigation.state.params;
+        
         this.aboutCommon = new AboutCommon({
             ...this.params,
             navigation: this.props.navigation,
@@ -57,7 +57,7 @@ export default class AboutPage extends Component {
     }
 
     getItem(menu) {
-        return ViewUtil.getMenuItem(() => this.onClick(menu), menu, THEME_COLOR);
+        return ViewUtil.getMenuItem(() => this.onClick(menu), menu, this.params.themeColor);
     }
 
     render() {

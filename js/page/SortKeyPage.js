@@ -12,9 +12,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ArrayUtil from "../util/ArrayUtil";
 import SortableListView from 'react-native-sortable-listview'
 
-const THEME_COLOR = '#678';
 
-
+//this.params.themeColor
 class SortKeyPage extends Component {
     constructor(props) {
         super(props);
@@ -144,7 +143,7 @@ class SortKeyPage extends Component {
             name={checked ? 'ios-checkbox' : 'md-square-outline'}
             size={20}
             style={{
-                color: THEME_COLOR,
+                color: this.params.themeColor,
             }}/>
     }
 
@@ -164,7 +163,7 @@ class SortKeyPage extends Component {
         let navigationBar = <NavigationBar
             title={title}
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
-            style={{backgroundColor: THEME_COLOR}}
+            style={{backgroundColor: this.params.themeColor}}
             rightButton={ViewUtil.getRightButton('保存', () => this.onSave())}
         />;
         return <View style={styles.container}>
@@ -176,7 +175,7 @@ class SortKeyPage extends Component {
                     this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0])
                     this.forceUpdate()
                 }}
-                renderRow={row => <SortCell data={row} {...this.params}/>}
+                renderRow={row => <SortCell data={row} {...this.params} themeColor={this.params.themeColor}/>}
             />
         </View>
     }
@@ -192,7 +191,7 @@ class SortCell extends Component {
                 <MaterialCommunityIcons
                     name={'sort'}
                     size={16}
-                    style={{marginRight: 10, color: THEME_COLOR}}/>
+                    style={{marginRight: 10, color: this.props.themeColor}}/>
                 <Text>{this.props.data.name}</Text>
             </View>
         </TouchableHighlight>

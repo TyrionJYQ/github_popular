@@ -15,34 +15,34 @@ import EventBus from 'react-native-event-bus'
 import eventTypes from '../util/EventTypes'
 
 
-const THEME_COLOR = '#a58';
 
 
 
-export default class FavoritePage extends Component {
+class FavoritePage extends Component {
     constructor(props) {
         super(props);
         this.languages = ['PHP', 'JAVA', 'html', 'Css3']
     }
     render() {
+        const {theme} = this.props;
         let statusBar = {
-            backgroundColor: '#eaeaea', //状态栏背景色
+            backgroundColor: theme.themeColor, //状态栏背景色
             barStyle: 'light-content'
         }
         let navigationBar = <NavigationBar
             title={'最爱'}
             statusBar={statusBar}
-            style={{ backgroundColor: THEME_COLOR }}
+            style={{ backgroundColor: theme.themeColor }}
         />
         const TabNavigator = createAppContainer(createMaterialTopTabNavigator({
             'popular': {
-                screen: props => <FavoriteTabPage {...props} flag={FLAG_STORAGE.flag_popular} />,
+                screen: props => <FavoriteTabPage {...props} flag={FLAG_STORAGE.flag_popular} theme={this.props.theme}/>,
                 navigationOptions: {
                     title: '最热'
                 }
             },
             'Trending': {
-                screen: props => <FavoriteTabPage {...props} flag={FLAG_STORAGE.flag_trending} />,//初始化Component时携带默认参数 @https://github.com/react-navigation/react-navigation/issues/2392
+                screen: props => <FavoriteTabPage {...props} flag={FLAG_STORAGE.flag_trending} theme={this.props.theme} />,//初始化Component时携带默认参数 @https://github.com/react-navigation/react-navigation/issues/2392
                 navigationOptions: {
                     title: '趋势',
                 },
@@ -54,7 +54,7 @@ export default class FavoritePage extends Component {
                 upperCaseLabel: false,
                 scrollEnabled: false,
                 style: {
-                    backgroundColor: '#a58',
+                    backgroundColor: theme.themeColor,
                     height: 40
                 },
                 indicatorStyle: {
@@ -73,6 +73,11 @@ export default class FavoritePage extends Component {
 
     }
 }
+
+const mapStateToFavorite = state => ({
+    theme: state.theme.theme
+})
+export default connect(mapStateToFavorite)(FavoritePage);
 
 class FavoriteTab extends Component {
     constructor(props) {
@@ -110,9 +115,11 @@ class FavoriteTab extends Component {
     }
     renderItem({ item }) {
         let RenderItem = this.props.flag === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem
+        const {themeColor} = this.props.theme
         return <RenderItem
+            theme={themeColor}
             projectModel={item}
-            onSelect={callback => { NavigationUtil.goPage({ projectModel: item, flag: this.props.flag, callback }, 'Detail') }}
+            onSelect={callback => { NavigationUtil.goPage({ projectModel: item, themeColor,flag: this.props.flag, callback }, 'Detail') }}
             onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
         />
     }
@@ -132,6 +139,8 @@ class FavoriteTab extends Component {
     
     render() {
         let store = this._getStore()
+        const {themeColor} = this.props.theme;
+         
         return (
             <View style={styles.container}>
                 <FlatList
@@ -141,8 +150,8 @@ class FavoriteTab extends Component {
                     refreshControl={
                         <RefreshControl
                             title={'loading'}
-                            titleColor={THEME_COLOR}
-                            colors={[THEME_COLOR]}
+                            titleColor={themeColor}
+                            colors={[themeColor]}
                             refreshing={store.isLoading}
                             onRefresh={() => this.loadData(true)}
                         />}
@@ -154,7 +163,8 @@ class FavoriteTab extends Component {
 }
 
 const mapState = state => ({
-    favorite: state.favorite
+    favorite: state.favorite,
+   
 })
 
 const mapDispatch = dispatch => ({

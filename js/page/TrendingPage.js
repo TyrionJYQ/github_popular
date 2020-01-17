@@ -20,7 +20,7 @@ import { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
 import ArrayUtil from "../util/ArrayUtil";
 
 const URL = 'https://github.com/trending/';
-const THEME_COLOR = '#a58';
+
 const PAGE_SIZE = 10;
 const EVENT_TYPE_TIME_SPAN_CHANGE = "EVENT_TYPE_TIME_SPAN_CHANGE";
 const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
@@ -40,12 +40,12 @@ class TrendingPage extends Component {
 
     _genTab() {
         const tabs = {};
-        const { keys,themeColor } = this.props;
+        const { keys, themeColor } = this.props;
         this.preKeys = keys;
         keys.forEach((item, index) => {
             if (item.checked) {
                 tabs[`tab${index}`] = {
-                    screen: props => <TrendingTab {...props} timeSpan={this.state.timeSpan} tabLabel={item.name} themeColor={themeColor}/>,
+                    screen: props => <TrendingTab {...props} timeSpan={this.state.timeSpan} tabLabel={item.name} themeColor={themeColor} />,
                     navigationOptions: {
                         title: item.name
                     }
@@ -87,8 +87,9 @@ class TrendingPage extends Component {
     }
 
     _genTabNav() {
-        // if (!this.tabNav) {
-        if (!this.tabNav || !ArrayUtil.isEqual(this.preKeys, this.props.keys)) {
+        const { themeColor } = this.props;
+        if (themeColor !== this.themeColor || !this.tabNav || !ArrayUtil.isEqual(this.preKeys, this.props.keys)) {
+            this.themeColor = themeColor;
             this.tabNav = createAppContainer(createMaterialTopTabNavigator(this._genTab(), {
                 tabBarOptions: {
                     tabStyle: styles.tabStyle,
@@ -111,9 +112,9 @@ class TrendingPage extends Component {
     }
 
     render() {
-        const { keys,themeColor } = this.props;
+        const { keys, themeColor } = this.props;
         let statusBar = {
-            backgroundColor: '#eaeaea', //状态栏背景色
+            backgroundColor: themeColor, //状态栏背景色
             barStyle: 'light-content'
         }
         let navigationBar = <NavigationBar
@@ -193,9 +194,10 @@ class Tab extends Component {
 
     }
     renderItem({ item }) {
+        const {themeColor} = this.props;
         return <TrendingItem projectModel={item}
-        theme = {this.props.themeColor}
-            onSelect={callback => { NavigationUtil.goPage({ projectModel: item, flag: FLAG_STORAGE.flag_trending, callback }, 'Detail') }}
+            theme={themeColor}
+            onSelect={callback => { NavigationUtil.goPage({ themeColor, projectModel: item, flag: FLAG_STORAGE.flag_trending, callback }, 'Detail') }}
             onFavorite={(item, isFavorite) => { FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_trending) }}
         />
     }

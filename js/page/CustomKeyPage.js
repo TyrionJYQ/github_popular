@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import ArrayUtil from "../util/ArrayUtil";
 
 
-const THEME_COLOR = '#678';
+
 
 class CustomKeyPage extends Component {
     constructor(props) {
@@ -145,12 +145,11 @@ class CustomKeyPage extends Component {
     }
 
     _checkedImage(checked) {
-        const { theme } = this.params;
         return <Ionicons
             name={checked ? 'ios-checkbox' : 'md-square-outline'}
             size={20}
             style={{
-                color: THEME_COLOR,
+                color: this.params.themeColor,
             }} />
     }
 
@@ -172,7 +171,7 @@ class CustomKeyPage extends Component {
         let navigationBar = <NavigationBar
             title={title}
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
-            style={{ backgroundColor: THEME_COLOR }}
+            style={{ backgroundColor: this.params.themeColor }}
             rightButton={ViewUtil.getRightButton(rightButtonTitle, () => this.onSave())}
         />;
         return <View style={styles.container}>

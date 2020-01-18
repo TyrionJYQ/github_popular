@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, ActivityIndicator, Text, FlatList, RefreshControl } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, Text, FlatList, RefreshControl ,TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import actions from '../action'
@@ -15,6 +15,7 @@ import FavoriteUtil from '../util/FavoriteUtil'
 import eventTypes from '../util/EventTypes'
 import EventBus from 'react-native-event-bus'
 import { FLAG_LANGUAGE } from "../expand/dao/LanguageDao";
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -30,13 +31,12 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
     }
 
     _genTab() {
-      
         const tabs = {};
-         const {keys} = this.props;
+         const {keys,theme} = this.props;
          keys.forEach((item, index) => {
             if (item.checked) {
                 tabs[`tab${index}`] = {
-                    screen: props => <PopularTab {...props} tabLabel={item.name}  theme={ this.props.theme}/>,
+                    screen: props => <PopularTab {...props} tabLabel={item.name}  theme={ theme.themeColor}/>,
                     navigationOptions: {
                         title: item.name
                     }
@@ -44,6 +44,26 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
             }
         });
         return tabs;
+    }
+
+    renderRightButton() {
+        const {theme} = this.props;
+        return <TouchableOpacity
+            onPress={() => {
+                NavigationUtil.goPage({theme}, 'SearchPage')
+            }}
+        >
+            <View style={{padding: 5, marginRight: 8}}>
+                <Ionicons
+                    name={'ios-search'}
+                    size={24}
+                    style={{
+                        marginRight: 8,
+                        alignSelf: 'center',
+                        color: 'white',
+                    }}/>
+            </View>
+        </TouchableOpacity>
     }
     render() {
         const tabs = this._genTab();
@@ -55,7 +75,9 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
         let navigationBar = <NavigationBar
             title={'最热'}
             statusBar={statusBar}
-            style={{ backgroundColor: this.props.theme }}
+            rightButton={this.renderRightButton()}
+            style={{ backgroundColor: theme.themeColor }
+        }
         />
         const TabNavigator =  keys.length ? createAppContainer(createMaterialTopTabNavigator(tabs, {
             tabBarOptions: {
@@ -63,7 +85,7 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
                 upperCaseLabel: false,
                 scrollEnabled: true,
                 style: {
-                    backgroundColor: theme,
+                    backgroundColor: theme.themeColor,
                     height: 40
                 },
                 indicatorStyle: {
@@ -85,7 +107,7 @@ const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 }
 const mapPopularStateToProps = state => ({
     keys: state.language.keys,
-    theme: state.theme.theme.themeColor
+    theme: state.theme.theme
 });
 const mapPopularDispatchToProps = dispatch => ({
     onLoadLanguage: flag => dispatch(actions.onLoadLanguage(flag))

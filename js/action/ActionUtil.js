@@ -9,10 +9,11 @@ import Utils from '../util/Util'
  * @param {*} data 
  * @param {*} pageSize 
  * @param {*} favoriteDao
+ * @param params 其他参数
  */
 
 
-export function handleData(actionType, dispatch, storeName, data, pageSize, favoriteDao) {
+export function handleData(actionType, dispatch, storeName, data, pageSize, favoriteDao,params) {
     let fixItems = [];
     if (data && data.data && data.data) {
         if (Array.isArray(data.data)) {
@@ -30,6 +31,7 @@ export function handleData(actionType, dispatch, storeName, data, pageSize, favo
             items: fixItems,
             storeName,
             pageIndex: 1,
+            ...params
         })
     })
     
@@ -49,6 +51,13 @@ export async function _projectModes(showItems, favoriteDao, callback) {
         projectModes.push(new ProjectModel(item, Utils.checkFavorite(item, keys)))
     }
     if (typeof callback === 'function') {
-        callback(projectModes);
+        doCallBack(callback,projectModes);
     }
 }
+
+
+export const doCallBack = (callBack, object) => {
+    if (typeof callBack === 'function') {
+        callBack(object);
+    }
+};

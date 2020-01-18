@@ -37,25 +37,7 @@ class MyPage extends Component {
             NavigationUtil.goBack(this.props.navigation);
         }
     }
-
-    getRightButton() {
-        return <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity
-                onPress={() => {
-                }}
-            >
-                <View style={{ padding: 5, marginRight: 8 }}>
-                    <Feather
-                        name={'search'}
-                        size={24}
-                        style={{ color: 'white' }}
-                    />
-                </View>
-
-            </TouchableOpacity>
-        </View>
-    }
-
+    
     getLeftButton(callBack) {
         return <TouchableOpacity
             style={{ padding: 8, paddingLeft: 12 }}
@@ -122,7 +104,6 @@ class MyPage extends Component {
                 title={'我的'}
                 statusBar={statusBar}
                 style={{ backgroundColor: themeColor }}
-                rightButton={this.getRightButton()}
                 leftButton={this.getLeftButton(() => this.onBack())}
             />;
         return (
